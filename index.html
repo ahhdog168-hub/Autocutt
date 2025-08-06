@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload & Process Video</title>
+</head>
+<body>
+  <h2>Upload Video</h2>
+  <form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" name="video" accept="video/*" required/>
+    <button type="submit">Upload & Process</button>
+  </form>
+  <p id="status"></p>
+  <script>
+    document.getElementById('uploadForm').onsubmit = async (e) => {
+      e.preventDefault();
+      document.getElementById('status').innerText = "Processing...";
+      const formData = new FormData(e.target);
+      const resp = await fetch('/process', { method: 'POST', body: formData });
+      const data = await resp.json();
+      if (data.success) {
+        document.getElementById('status').innerHTML = `✅ Done! <a href="${data.url}" target="_blank">View Video</a>`;
+      } else {
+        document.getElementById('status').innerText = "❌ Error: " + data.message;
+      }
+    };
+  </script>
+</body>
+</html>
